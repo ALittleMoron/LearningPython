@@ -11,7 +11,7 @@ def mkranddir() -> str:
 def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
     """walk through path and draw tree"""
     # validation of args
-    if not path or type(path) is not str:
+    if not path or type(path) is not str or not os.path.exists(path):
         print('==================================================================',\
               '\n= Something went wrong, so I override path to default: C:\\python =',\
               '\n==================================================================', sep ='')
@@ -20,6 +20,7 @@ def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
         avoid_sys_dirs = True
     
     # main part
+    path = os.path.normpath(path)
     if avoid_sys_dirs == True:
         for item in [x for x in os.listdir(path) if not x.startswith('.') and not x.startswith('__')]:
             if os.path.isdir(path+'\\'+item):
