@@ -1,14 +1,15 @@
 import os, os.path
 from random import randint, random
 
-# [x for x in a if not x.startswith('.') and not x.startswith('__')]
+#TODO: mkranddir raise NotADirectoryError on textfiles. Next time try to catch this shit.
 
-def mkranddir(place:str, deep:int) -> str:
-    """return path to random maked dir with folders and text files
+def mkranddir(place:str, deep:int, num:int) -> str:
+    """Make path to random maked dir with folders and text files, return 0
     
     Keyword arguments:
-    place -- path to place, where dir will be made (default C:\\Users\\dimal\\Desctop)
-    deep -- number of levels, which program will run to make dirs (default 2)
+    place -- path to place, where dir will be made (default C:\\Users\\dimal\\Desctop\\test)
+    deep -- number of levels, which program will run to make dirs (default 1)
+    num -- number of folders+files on every deep level (default 5)
     """
     
     # validation of args
@@ -16,14 +17,28 @@ def mkranddir(place:str, deep:int) -> str:
         print('===================================================================',\
             '\n= Something went wrong, so I override place to default: C:\\python =',\
             '\n===================================================================\n\n', sep ='')
-        place = 'C:\\Users\\dimal\\Desctop'
+        place = 'C:\\python\\test'
     if not deep or type(deep) is not int:
-        deep = 2
+        deep = 1
+    if not num or type(num) is not int:
+        num = 5
+    if deep == 3:
+        return
 
     # main part
     place = os.path.normpath(place)
-    for dp in deep:
-        pass
+    file_or_folder = [randint(0,1) for _ in range(num)]
+    for fof in file_or_folder:
+        try:
+            if fof:
+                os.mkdir(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+            else:
+                with open(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}.txt', 'w') as f:
+                    f.write(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+        except (FileNotFoundError, NotADirectoryError):
+            continue
+    for ls in os.listdir(place):
+        mkranddir(place+'\\'+ls, deep+1, num)
 
 
 def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
@@ -73,7 +88,6 @@ def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
 
 
 if __name__ == "__main__":
-    path = 'C:\\python'
-    tree(path, True)
+    tree('C:\\python\\test', True, 1)
 else:
     raise Exception("Use file like a program, not module. WIP.")
