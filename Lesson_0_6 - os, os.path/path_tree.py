@@ -3,8 +3,8 @@ from random import randint, random
 
 #TODO: mkranddir raise NotADirectoryError on textfiles. Next time try to catch this shit.
 
-def mkranddir(place:str, deep:int, num:int) -> str:
-    """Make path to random maked dir with folders and text files, return 0
+def mkranddir(place:str, deep:int, num:int) -> None:
+    """Make path to random maked dir with folders and text files, return None
     
     Keyword arguments:
     place -- path to place, where dir will be made (default C:\\Users\\dimal\\Desctop\\test)
@@ -18,11 +18,11 @@ def mkranddir(place:str, deep:int, num:int) -> str:
             '\n= Something went wrong, so I override place to default: C:\\python =',\
             '\n===================================================================\n\n', sep ='')
         place = 'C:\\python\\test'
-    if not deep or type(deep) is not int:
+    if not deep or type(deep) is not int or deep < 1:
         deep = 1
-    if not num or type(num) is not int:
+    if not num or type(num) is not int or num < 1:
         num = 5
-    if deep == 3:
+    if deep == 5:
         return
 
     # main part
@@ -30,11 +30,19 @@ def mkranddir(place:str, deep:int, num:int) -> str:
     file_or_folder = [randint(0,1) for _ in range(num)]
     for fof in file_or_folder:
         try:
-            if fof:
-                os.mkdir(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+            if deep == 1:
+                if fof:
+                    os.mkdir(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+                else:
+                    with open(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}.txt', 'w') as f:
+                        f.write(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+            elif deep > 1:
+                if fof:
+                    os.mkdir(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+                else:
+                    continue
             else:
-                with open(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}.txt', 'w') as f:
-                    f.write(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+                return
         except (FileNotFoundError, NotADirectoryError):
             continue
     for ls in os.listdir(place):
@@ -42,7 +50,7 @@ def mkranddir(place:str, deep:int, num:int) -> str:
 
 
 def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
-    """walk through path and draw tree
+    """walk through path and draw tree, return None
     
     Keyword arguments:
     path -- place, which will be drew (default C:\\python)
@@ -58,7 +66,9 @@ def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
         path = 'C:\\python'
     if not avoid_sys_dirs or type(avoid_sys_dirs) is not bool:
         avoid_sys_dirs = True
-    
+    if level < 1 or type(level) is not int:
+        level = 1
+
     # main part
     path = os.path.normpath(path)
     if avoid_sys_dirs == True:
