@@ -1,7 +1,6 @@
 import os, os.path
 from random import randint, random
 
-#TODO: mkranddir raise NotADirectoryError on textfiles. Next time try to catch this shit.
 
 def mkranddir(place:str, deep:int, num:int) -> None:
     """Make path to random maked dir with folders and text files, return None
@@ -99,5 +98,3 @@ def tree(path:str, avoid_sys_dirs:bool, level=1) -> None:
 
 if __name__ == "__main__":
     tree('C:\\python\\test', True, 1)
-else:
-    raise Exception("Use file like a program, not module. WIP.")
