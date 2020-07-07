@@ -34,13 +34,13 @@ def mkranddir(place:str, deep:int, num:int) -> console_print:
         try:
             if deep == 1:
                 if fof:
-                    os.mkdir(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+                    os.mkdir(os.path.join(place, f'{randint(100, 262717)}{randint(100, 262717)}'))
                 else:
-                    with open(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}.txt', 'w') as f:
-                        f.write(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+                    with open(os.path.join(place+, f'{randint(100, 262717)}{randint(100, 262717)}.txt', 'w')) as f:
+                        f.write(os.path.join(place, f'{randint(100, 262717)}{randint(100, 262717)}'))
             elif deep > 1:
                 if fof:
-                    os.mkdir(place+'\\'+f'{randint(100, 262717)}{randint(100, 262717)}')
+                    os.mkdir(os.path.join(place, f'{randint(100, 262717)}{randint(100, 262717)}'))
                 else:
                     continue
             else:
@@ -48,7 +48,7 @@ def mkranddir(place:str, deep:int, num:int) -> console_print:
         except (FileNotFoundError, NotADirectoryError):
             continue
     for ls in os.listdir(place):
-        mkranddir(place+'\\'+ls, deep+1, num)
+        mkranddir(os.path.join(place, ls), deep+1, num)
 
 
 def tree(path:str, avoid_sys_dirs:bool, level=1) -> console_print:
