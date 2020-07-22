@@ -2,6 +2,11 @@ import sqlite3
 import os.path
 
 
+# TODO: сделать декоратор, который будет сам коннектиться к базе данных,
+# выполнять нужную функцию, а затем коммитить изменения и выполнять разъедине-
+# ние с базой данных.
+
+
 def connect_to_database(database_name:str, path:str = '') -> sqlite3.Connection:
     """ Функция подключения к базе данных. Возвращает соединение на уже
     существующую базу данных (Не хочу случайно создать лишнюю БД).
@@ -46,6 +51,7 @@ def add_info_to_table(connection:sqlite3.Connection,
     """ Функция добавления информации в имеющуюся таблицу в базе данных
 
     аргументы:
+    connection -- соединение с базой данных
     cursor -- курсор на базу данных
     table_name -- название таблицы
     args -- кортеж элементов таблицы без их типов. Пример: ('something', ...)
@@ -61,8 +67,42 @@ def add_info_to_table(connection:sqlite3.Connection,
     connection.close()
 
 
+def show_all_created_tables_name(connection:sqlite3.Connection) -> None:
+    """ Функция выводит список имен всех созданных таблиц (без содержания)
+
+    аргумент:
+    connection -- соединение с базой данных
+    """
+    cursor = connection.cursor()
+    cursor.execute("""SELECT name FROM sqlite_master
+                      WHERE type='table'""")
+    print("Список всех созданных таблиц:")
+    for e, table in enumerate(cursor.fetchall()):
+        print(e+1, ' -- ', table[0])
+    connection.commit()
+    connection.close()
+
+
+def show_all_created_tables_content(connection:sqlite3.Connection) -> None:
+    """ Функция выводит список всех созданных таблиц с их содержанием
+
+    аргумент:
+    connection -- соединение с базой данных
+    """
+    cursor = connection.cursor()
+    cursor.execute("""SELECT name FROM sqlite_master
+                      WHERE type='table'""")
+    tables_name = [table[0] for table in cursor.fetchall()]
+    print("Список всех созданных таблиц и их содержание:")
+    for table in tables_name:
+        cursor.execute(f"""SELECT * FROM {table}""")
+        print(table)
+        for e, content in enumerate(cursor.fetchall()):
+            print('  ', e+1, ' -- ', sep='', end='')
+            print(*content, sep=', ')
+    connection.commit()
+    connection.close()
+
+
 if __name__ == '__main__':
-    dct = {'title': 'TEXT',
-           'author': 'TEXT'}
-    data = ('asgas', 'asgsagags')
-    add_info_to_table(connect_to_database('MyDataBase.db'), 'abstract', data)
+    show_all_created_tables_content(connect_to_database('MyDataBase.db'))
