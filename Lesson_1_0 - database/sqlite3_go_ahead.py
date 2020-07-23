@@ -6,6 +6,7 @@ import os.path
 # выполнять нужную функцию, а затем коммитить изменения и выполнять разъедине-
 # ние с базой данных.
 
+# TODO: написать классы-исключения, чтобы везде не raise'ить Exception
 
 def connect_to_database(database_name:str, path:str = '') -> sqlite3.Connection:
     """ Функция подключения к базе данных. Возвращает соединение на уже
@@ -16,12 +17,16 @@ def connect_to_database(database_name:str, path:str = '') -> sqlite3.Connection:
     path -- путь к файлу базы данных (Опциональный. Не передавать аргумент,
     если база данных находится рядом с python файлом.
     """
-    database = os.path.join(path, database_name)
-    if os.path.isfile(database) and ('.db' in database or '.sqlite' in database):
-        connection = sqlite3.connect(database, timeout=5)
-        return connection
-    else:
-        return None
+    try:
+        database = os.path.join(path, database_name)
+        if os.path.isfile(database) and ('.db' in database or '.sqlite' in database):
+            connection = sqlite3.connect(database, timeout=5)
+            return connection
+        else:
+            return None
+    except sqlite3.Error as e:
+        print(e)
+        connection.close()
 
 
 def create_databace_table(connection:sqlite3.Connection,
@@ -33,17 +38,21 @@ def create_databace_table(connection:sqlite3.Connection,
     table_name -- название таблицы
     args -- словарь элементов таблицы с их типами. Пример: {'title': 'TEXT'}
     """
-    if connection is None:
-        raise Exception('Неправильное название базы данных. Введите существующую')
-    if type(table_name) is not str:
-        raise Exception('Название таблицы может быть только строковое')
-    if type(args) is not dict:
-        raise Exception('элементы таблицы и их типы могут быть представлены только в словаре')
-    cursor = connection.cursor()
-    cursor.execute(f"""CREATE TABLE IF NOT EXISTS {table_name.lower()} (
-                       {', '.join(f'{k} {v}' for k,v in args.items())})""")
-    connection.commit()
-    connection.close()
+    try:
+        if connection is None:
+            raise Exception('Неправильное название базы данных. Введите существующую')
+        if type(table_name) is not str:
+            raise Exception('Название таблицы может быть только строковое')
+        if type(args) is not dict:
+            raise Exception('элементы таблицы и их типы могут быть представлены только в словаре')
+        cursor = connection.cursor()
+        cursor.execute(f"""CREATE TABLE IF NOT EXISTS {table_name.lower()} (
+                        {', '.join(f'{k} {v}' for k,v in args.items())})""")
+        connection.commit()
+    except sqlite3.OperationalError as e:
+        print(e)
+    finally:
+        connection.close()
 
 
 def add_info_to_table(connection:sqlite3.Connection,
@@ -73,14 +82,18 @@ def show_all_created_tables_name(connection:sqlite3.Connection) -> None:
     аргумент:
     connection -- соединение с базой данных
     """
-    cursor = connection.cursor()
-    cursor.execute("""SELECT name FROM sqlite_master
-                      WHERE type='table'""")
-    print("Список всех созданных таблиц:")
-    for e, table in enumerate(cursor.fetchall()):
-        print(e+1, ' -- ', table[0])
-    connection.commit()
-    connection.close()
+    try:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT name FROM sqlite_master
+                        WHERE type='table'""")
+        print("Список всех созданных таблиц:")
+        for e, table in enumerate(cursor.fetchall()):
+            print(e+1, ' -- ', table[0])
+        connection.commit()
+    except sqlite3.OperationalError as e:
+        print(e)
+    finally:
+        connection.close()
 
 
 def show_all_created_tables_content(connection:sqlite3.Connection) -> None:
@@ -89,19 +102,23 @@ def show_all_created_tables_content(connection:sqlite3.Connection) -> None:
     аргумент:
     connection -- соединение с базой данных
     """
-    cursor = connection.cursor()
-    cursor.execute("""SELECT name FROM sqlite_master
-                      WHERE type='table'""")
-    tables_name = [table[0] for table in cursor.fetchall()]
-    print("Список всех созданных таблиц и их содержание:")
-    for table in tables_name:
-        cursor.execute(f"""SELECT * FROM {table}""")
-        print(table)
-        for e, content in enumerate(cursor.fetchall()):
-            print('  ', e+1, ' -- ', sep='', end='')
-            print(*content, sep=', ')
-    connection.commit()
-    connection.close()
+    try:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT name FROM sqlite_master
+                        WHERE type='table'""")
+        tables_name = [table[0] for table in cursor.fetchall()]
+        print("Список всех созданных таблиц и их содержание:")
+        for table in tables_name:
+            cursor.execute(f"""SELECT * FROM {table}""")
+            print(table)
+            for e, content in enumerate(cursor.fetchall()):
+                print('  ', e+1, ' -- ', sep='', end='')
+                print(*content, sep=', ')
+        connection.commit()
+    except sqlite3.OperationalError as e:
+        print(e)
+    finally:
+        connection.close()
 
 
 if __name__ == '__main__':
