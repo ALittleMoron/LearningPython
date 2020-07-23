@@ -6,7 +6,11 @@ import os.path
 # выполнять нужную функцию, а затем коммитить изменения и выполнять разъедине-
 # ние с базой данных.
 
-# TODO: написать классы-исключения, чтобы везде не raise'ить Exception
+
+class WrongDataBaseNameException(Exception):
+    """ Класс-исключение для отлова ошибки о неправильном введенном названии БД """
+    pass
+
 
 def connect_to_database(database_name:str, path:str = '') -> sqlite3.Connection:
     """ Функция подключения к базе данных. Возвращает соединение на уже
@@ -40,11 +44,11 @@ def create_databace_table(connection:sqlite3.Connection,
     """
     try:
         if connection is None:
-            raise Exception('Неправильное название базы данных. Введите существующую')
+            raise WrongDataBaseNameException('Неправильное название базы данных. Введите существующую')
         if type(table_name) is not str:
-            raise Exception('Название таблицы может быть только строковое')
+            raise TypeError('Название таблицы может быть только строковое')
         if type(args) is not dict:
-            raise Exception('элементы таблицы и их типы могут быть представлены только в словаре')
+            raise TypeError('элементы таблицы и их типы могут быть представлены только в словаре')
         cursor = connection.cursor()
         cursor.execute(f"""CREATE TABLE IF NOT EXISTS {table_name.lower()} (
                         {', '.join(f'{k} {v}' for k,v in args.items())})""")
@@ -66,9 +70,9 @@ def add_info_to_table(connection:sqlite3.Connection,
     args -- кортеж элементов таблицы без их типов. Пример: ('something', ...)
     """
     if connection is None:
-        raise Exception('Неправильное название базы данных. Введите существующую')
+        raise WrongDataBaseNameException('Неправильное название базы данных. Введите существующую')
     if type(args) is not tuple:
-        raise Exception('аргумент args может быть только кортежем или списком')
+        raise TypeError('аргумент args может быть только кортежем или списком')
     cursor = connection.cursor()
     cursor.execute(f"""INSERT INTO {table_name.lower()} VALUES
                        (?{', ?' * (len(args)-1)})""", args)
