@@ -2,11 +2,6 @@ import sqlite3
 import os.path
 
 
-# TODO: сделать декоратор, который будет сам коннектиться к базе данных,
-# выполнять нужную функцию, а затем коммитить изменения и выполнять разъедине-
-# ние с базой данных.
-
-
 class WrongDataBaseNameException(Exception):
     """ Класс-исключение для отлова ошибки о неправильном введенном названии БД """
     pass
@@ -87,7 +82,6 @@ def add_info_to_table(connection:sqlite3.Connection,
 
     аргументы:
     connection -- соединение с базой данных
-    cursor -- курсор на базу данных
     table_name -- название таблицы
     args -- кортеж элементов таблицы без их типов. Пример: ('something', ...)
     """
@@ -104,6 +98,18 @@ def add_info_to_table(connection:sqlite3.Connection,
         print(e)
     finally:
         connection.close()
+
+
+def delete_info_in_table(connection:sqlite3.Connection,
+                         table_name:str, _id:int) -> None:
+    """ Функция удаляет запись в таблице по её id
+
+    аргументы:
+    connection -- соединение с базой данных
+    table_name -- название таблицы
+    _id -- идентификационный номер записи в таблице
+    """
+    pass
 
 
 def show_all_created_tables_name(connection:sqlite3.Connection) -> None:
@@ -162,7 +168,7 @@ def edit_info_in_table(connection:sqlite3.Connection,
     аргументы:
     connection -- соединение с базой данных
     table_name -- название таблицы
-    id -- идентификационный номер записи в таблице
+    _id -- идентификационный номер записи в таблице
     data -- данные для изменения
     """
     try:
