@@ -62,19 +62,6 @@ def binary_search(seq:iterable, element:all_types) -> element_position:
 
 
 @benchmark
-def exponentiol_search(seq:iterable, element:all_types) -> element_position:
-    """ Алгоритм экспоненциального поиска в последовательности
-
-    аргументы:
-    seq -- последовательность, в которой будет вестись поиск
-    element -- элемент, который нужно найти
-
-    возвращает element_position -- номер позиции элемента (начиная с нуля)
-    """
-    pass
-
-
-@benchmark
 def interpolation_search(seq:iterable, element:all_types) -> element_position:
     """ Алгоритм интерполяционного поиска в последовательности
 
@@ -84,14 +71,23 @@ def interpolation_search(seq:iterable, element:all_types) -> element_position:
 
     возвращает element_position -- номер позиции элемента (начиная с нуля)
     """
-    pass
+    low = 0
+    high = (len(seq) - 1)
+    while low <= high and element >= seq[low] and element <= seq[high]:
+        index = low + int(((float(high - low) / ( seq[high] - seq[low])) * ( element - seq[low])))
+        if seq[index] == element:
+            return index
+        if seq[index] < element:
+            low = index + 1;
+        else:
+            high = index - 1;
+    return -1
 
 
 if __name__ == '__main__':
-    sequence = [i for i in range(100000)]
-    element = randint(0, 99999)
+    sequence = [i for i in range(100000000)]
+    element = randint(0, 99999999)
     test_1 = lineal_search(sequence, element)
     test_2 = binary_search(sequence, element)
-    test_3 = exponentiol_search(sequence, element)
-    test_4 = interpolation_search(sequence, element)
+    test_3 = interpolation_search(sequence, element)
 
