@@ -48,6 +48,29 @@ def odd_filtered_numbers(range_num:int) -> filter:
     return filter(lambda x: x%2, (y for y in range(range_num+1)))
 
 
+
+"""
+Также можно создавать и другие последовательности как при list comprehensions.
+Например, словари, множества и даже словари словарей, списки списков и т.д.
+"""
+
+
+# dict comprehensions and list of lists:
+def letter_count(string:str) -> dict:
+    """ возвращает словарь с "ключ-значением" в виде "символ-число символов в строке". """
+    return {letter: string.count(letter) for letter in string}
+
+
+def from_text_to_lines_to_words(text:str) -> list:
+    """ тот же from_text_to_lines, но с разделением строк на слова. """
+    return [line.strip().split() for line in text.split('\n')]
+
+
+def list_of_lists(range_num) -> list:
+    """ возвращает список из range_num**2 списков перестановки 2-х чисел от 0 до range_num+1 """
+    return [[x,y] for x in range(range_num+1) for y in range(range_num+1)]
+
+
 if __name__ == "__main__":
     text = """
         Beautiful is better than ugly.
@@ -72,3 +95,4 @@ if __name__ == "__main__":
     """
     print(list_of_numbers(5), list_of_odd_numbers(5), from_text_to_lines(text), sep='\n', end= '\n\n')
     print(list(squared_numbers(5)), list(odd_filtered_numbers(5)), sep='\n', end='\n\n')
+    print(letter_count('string for count.'), from_text_to_lines_to_words(text), list_of_lists(5), sep='\n', end='\n\n')
