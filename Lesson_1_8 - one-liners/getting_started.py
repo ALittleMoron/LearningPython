@@ -91,6 +91,34 @@ def from_list_of_lists_to_list(seq:list) -> list:
 
 
 
+"""
+Неплохой способ работы с такими только что созданными списками, словарями или множествами - это
+отправка их в качестве аргумента для функций и методов map, filter, join и похожих.
+При это с какого-то момента такие вложения друг в друга становятся на столько сложными, что
+понять, что строка делает, становится достаточно сложно.
+
+Пример: 
+def ip_to_int32(ip):
+    return sum([2**e for e, z in enumerate(str(''.join([('0' * (8 - len(y))) + y for y in [bin(int(x))[2:] for x in ip.split('.')]]))[::-1]) if z == '1'])
+
+^ тут функция занимается тем, что принимает строку IP, переводит каждый элемент в двоичную систему в 8 знаками (1 = 00000001), объединяет элементы в одно
+большое двочное число и переводит его обратно в десятичное. Я долго всматривался, чтобы понять, в каком порядке и что она делает. При этом повторить такое
+проблематично. Это превращается уже в написание регулярных выражений, что, думаю, не есть хорошо, так как читаемость кода падает в разы.
+"""
+
+
+def sum_of_odd_numbers(range_num: int) -> int:
+    """ возвращает сумму нечетных чисел от 0 до range_num+1 """
+    return sum([x for x in range(range_num+1) if x%2])
+
+
+def odd_numbers_to_string_with_sep(range_num:int) -> str:
+    """ возвращает конкатинированную строку из последовательности нечетных чисел от 0 до range_num+1
+    с сепаратором в виде '__'
+     """
+    return '__'.join([str(x) for x in range(range_num+1) if x%2])
+
+
 if __name__ == "__main__":
     text = """
         Beautiful is better than ugly.
@@ -117,3 +145,4 @@ if __name__ == "__main__":
     print(list(squared_numbers(5)), list(odd_filtered_numbers(5)), sep='\n', end='\n\n')
     print(letter_count('string for count.'), from_text_to_lines_to_words(text), list_of_lists(5), sep='\n', end='\n\n')
     print(filter_of_odd_numbers([1, 2, 13, 66621, 125, 12, 52, 345]), from_list_of_lists_to_list([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), sep='\n', end='\n\n')
+    print(sum_of_odd_numbers(5), odd_numbers_to_string_with_sep(5), sep='\n', end='\n\n')
