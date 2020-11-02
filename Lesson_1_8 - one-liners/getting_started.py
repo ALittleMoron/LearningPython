@@ -82,7 +82,7 @@ def list_of_lists(range_num) -> list:
 # cycle for sequence
 def filter_of_odd_numbers(seq:list) -> list:
     """ такой же фильтр, что и выше, но без функции filter и без range. """
-    return [x for x in seq if x%1]
+    return [x for x in seq if x%2]
 
 
 def from_list_of_lists_to_list(seq:list) -> list:
@@ -116,3 +116,4 @@ if __name__ == "__main__":
     print(list_of_numbers(5), list_of_odd_numbers(5), from_text_to_lines(text), sep='\n', end= '\n\n')
     print(list(squared_numbers(5)), list(odd_filtered_numbers(5)), sep='\n', end='\n\n')
     print(letter_count('string for count.'), from_text_to_lines_to_words(text), list_of_lists(5), sep='\n', end='\n\n')
+    print(filter_of_odd_numbers([1, 2, 13, 66621, 125, 12, 52, 345]), from_list_of_lists_to_list([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), sep='\n', end='\n\n')
