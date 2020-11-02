@@ -71,6 +71,26 @@ def list_of_lists(range_num) -> list:
     return [[x,y] for x in range(range_num+1) for y in range(range_num+1)]
 
 
+
+"""
+Хороший вариант - это проход не по объекту range, а по переданным в качестве аргумента функции спискам.
+Но что если нужно пройтись по списку скисков? Как, например, создать из списка списков 1 большой список
+со всеми элементами [][x]? Оказывается, достаточно просто это можно сделать также в 1 строку.
+"""
+
+
+# cycle for sequence
+def filter_of_odd_numbers(seq:list) -> list:
+    """ такой же фильтр, что и выше, но без функции filter и без range. """
+    return [x for x in seq if x%1]
+
+
+def from_list_of_lists_to_list(seq:list) -> list:
+    """ раскрывает список списков в обычный список. """
+    return [x for y in seq for x in y]
+
+
+
 if __name__ == "__main__":
     text = """
         Beautiful is better than ugly.
