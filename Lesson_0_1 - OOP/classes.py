@@ -76,7 +76,6 @@ class Kingdom(State):
 
 
 def main():
-    '''Тест какашками'''
 
 if __name__ == "__main__":
     main()
