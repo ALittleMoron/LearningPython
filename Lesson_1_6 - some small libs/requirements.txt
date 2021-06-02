@@ -7,4 +7,4 @@ pyspeedtest==1.2.7
 requests==2.24.0
 termcolor==1.1.0
 termcolor2==0.0.3
-urllib3==1.25.10
+urllib3==1.26.5
